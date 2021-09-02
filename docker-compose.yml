@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  elasticsearch:
+    image: elasticsearch:7.13.2
+    container_name: elasticsearch
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    networks:
+      - app
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.2
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+    depends_on:
+      - elasticsearch
+    networks:
+      - app
+networks:
+  app:
+    driver: bridge
